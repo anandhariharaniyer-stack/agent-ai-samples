@@ -1,0 +1,5 @@
+<script>start("/Users/d25313/Projects/agent-ai-samples/simple-chatbot/");</script>
+<script>onHasParentDirectory();</script>
+<script>addRow("__pycache__","__pycache__",1,96,"96 B",1779462307,"5/22/26, 11:05:07 AM");</script>
+<script>addRow("my_first_agent.py","my_first_agent.py",0,1050,"1.0 kB",1779455657,"5/22/26, 9:14:17 AM");</script>
+<script>addRow("requirements.txt","requirements.txt",0,66,"66 B",1779453946,"5/22/26, 8:45:46 AM");</script>
