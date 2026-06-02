@@ -1,0 +1,26 @@
+# Documentation Pipeline Configuration - AWS Bedrock
+
+bedrock:
+  model_id: "anthropic.claude-3-sonnet-20240229-v1:0"
+  region: "us-east-1"
+  # profile: "my-aws-profile"  # Optional: AWS CLI profile name
+  temperature: 0.3
+  max_tokens: 4000
+
+documentation:
+  template: "default"
+  output_format: "markdown"
+
+enrichment:
+  sources:
+    - "./docs/"
+    - "./knowledge/"
+
+verification:
+  confidence_threshold: 0.7
+  flag_for_review: true
+
+scheduling:
+  trigger: "on_pr_merge"    # on_pr_merge | on_release | scheduled
+  scope: "changed_modules"  # changed_modules | full
+  # cron: "0 9 * * 1"      # Weekly Monday 9am (for scheduled trigger)
