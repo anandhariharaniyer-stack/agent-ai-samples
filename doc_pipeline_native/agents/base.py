@@ -1,16 +1,16 @@
-"""Base agent class for the documentation pipeline."""
+"""Base agent class for the documentation pipeline (Bedrock version)."""
 
 from abc import ABC, abstractmethod
 from datetime import datetime
 
-from doc_pipeline_native.llm_client import LLMClient
-from doc_pipeline_native.models import AgentOutput
+from doc_pipeline_bedrock.llm_client import BedrockLLMClient
+from doc_pipeline_bedrock.models import AgentOutput
 
 
 class BaseAgent(ABC):
     """Abstract base class for all documentation agents."""
 
-    def __init__(self, llm_client: LLMClient):
+    def __init__(self, llm_client: BedrockLLMClient):
         self.llm = llm_client
 
     @property
