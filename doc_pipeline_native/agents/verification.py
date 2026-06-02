@@ -1,10 +1,10 @@
-"""Verification Agent - validates documentation accuracy against code (Bedrock)."""
+"""Verification Agent - validates documentation accuracy against code."""
 
 import json
 from pathlib import Path
 
-from doc_pipeline_bedrock.agents.base import BaseAgent
-from doc_pipeline_bedrock.models import AgentOutput, Issue, ConfidenceScore
+from doc_pipeline_native.agents.base import BaseAgent
+from doc_pipeline_native.models import AgentOutput, Issue, ConfidenceScore
 
 
 SYSTEM_PROMPT = """You are a verification agent. Your job is to validate whether documentation 
@@ -58,7 +58,16 @@ class VerificationAgent(BaseAgent):
         return "Verification Agent"
 
     def execute(self, documentation: str, repo_path: str, confidence_threshold: float = 0.7, **kwargs) -> AgentOutput:
-        """Verify documentation accuracy against the codebase."""
+        """Verify documentation accuracy against the codebase.
+
+        Args:
+            documentation: Enriched documentation to verify.
+            repo_path: Path to the source code repository.
+            confidence_threshold: Minimum confidence score threshold.
+
+        Returns:
+            AgentOutput containing verified documentation, issues, and scores.
+        """
         repo = Path(repo_path)
         code_content = self._read_key_files(repo)
 
@@ -70,11 +79,12 @@ class VerificationAgent(BaseAgent):
         response = self.llm.generate(
             system_prompt=SYSTEM_PROMPT,
             user_prompt=user_prompt,
-            temperature=0.1,
+            temperature=0.1,  # Low temperature for factual verification
         )
 
         issues, confidence_scores, verified_doc = self._parse_response(response, documentation)
 
+        # Flag sections below threshold
         flagged_sections = [
             cs.section for cs in confidence_scores if cs.score < confidence_threshold
         ]
@@ -96,6 +106,7 @@ class VerificationAgent(BaseAgent):
     def _parse_response(self, response: str, fallback_doc: str) -> tuple[list[Issue], list[ConfidenceScore], str]:
         """Parse the JSON response from the verification LLM."""
         try:
+            # Strip markdown code fences if present
             clean = response.strip()
             if clean.startswith("```"):
                 clean = clean.split("\n", 1)[1]
@@ -123,9 +134,11 @@ class VerificationAgent(BaseAgent):
             ]
 
             verified_doc = data.get("verified_documentation", fallback_doc)
+
             return issues, confidence_scores, verified_doc
 
         except (json.JSONDecodeError, KeyError, TypeError):
+            # If parsing fails, return the original doc with a warning
             return (
                 [Issue(section="Parser", description="Could not parse verification output", severity="low")],
                 [],

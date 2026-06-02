@@ -1,9 +1,9 @@
-"""Documentation Generation Agent - produces first-pass documentation from code (Bedrock)."""
+"""Documentation Generation Agent - produces first-pass documentation from code."""
 
 from pathlib import Path
 
-from doc_pipeline_bedrock.agents.base import BaseAgent
-from doc_pipeline_bedrock.models import AgentOutput
+from doc_pipeline_native.agents.base import BaseAgent
+from doc_pipeline_native.models import AgentOutput
 
 
 SYSTEM_PROMPT = """You are a documentation generation agent. Your job is to analyze source code 
@@ -48,7 +48,14 @@ class GenerationAgent(BaseAgent):
         return "Documentation Generation Agent"
 
     def execute(self, repo_path: str, **kwargs) -> AgentOutput:
-        """Generate documentation from the repository."""
+        """Generate documentation from the repository.
+
+        Args:
+            repo_path: Path to the source code repository.
+
+        Returns:
+            AgentOutput containing the raw structured documentation.
+        """
         repo = Path(repo_path)
         repo_structure = self._get_repo_structure(repo)
         source_content = self._read_source_files(repo)
@@ -85,7 +92,7 @@ class GenerationAgent(BaseAgent):
                 relative = path.relative_to(repo)
                 lines.append(str(relative))
 
-        return "\n".join(lines[:100])
+        return "\n".join(lines[:100])  # Limit to 100 files
 
     def _read_source_files(self, repo: Path, max_files: int = 20, max_chars: int = 50000) -> str:
         """Read source files from the repository."""

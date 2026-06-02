@@ -1,9 +1,9 @@
-"""Context Enrichment Agent - adds business and architectural context (Bedrock)."""
+"""Context Enrichment Agent - adds business and architectural context."""
 
 from pathlib import Path
 
-from doc_pipeline_bedrock.agents.base import BaseAgent
-from doc_pipeline_bedrock.models import AgentOutput
+from doc_pipeline_native.agents.base import BaseAgent
+from doc_pipeline_native.models import AgentOutput
 
 
 SYSTEM_PROMPT = """You are a context enrichment agent. Your job is to enhance technical documentation 
@@ -40,7 +40,15 @@ class EnrichmentAgent(BaseAgent):
         return "Context Enrichment Agent"
 
     def execute(self, documentation: str, knowledge_sources: list[str] = None, **kwargs) -> AgentOutput:
-        """Enrich documentation with context from knowledge sources."""
+        """Enrich documentation with context from knowledge sources.
+
+        Args:
+            documentation: Raw documentation from the generation agent.
+            knowledge_sources: List of file paths to knowledge sources.
+
+        Returns:
+            AgentOutput containing enriched documentation.
+        """
         knowledge_content = self._load_knowledge_sources(knowledge_sources or [])
 
         if not knowledge_content.strip():

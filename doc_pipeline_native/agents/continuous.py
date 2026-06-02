@@ -1,18 +1,18 @@
-"""Continuous Update Agent - monitors repository for changes (Bedrock version)."""
+"""Continuous Update Agent - monitors repository for changes and triggers re-runs."""
 
 import subprocess
 from pathlib import Path
 from dataclasses import dataclass
 
-from doc_pipeline_bedrock.agents.base import BaseAgent
-from doc_pipeline_bedrock.models import AgentOutput
+from doc_pipeline_native.agents.base import BaseAgent
+from doc_pipeline_native.models import AgentOutput
 
 
 @dataclass
 class ChangeDetection:
     """Represents detected changes in the repository."""
     changed_files: list[str]
-    change_type: str
+    change_type: str  # "commit", "release", "scheduled"
     impacted_modules: list[str]
     is_high_risk: bool
 
@@ -25,7 +25,15 @@ class ContinuousUpdateAgent(BaseAgent):
         return "Continuous Update Agent"
 
     def execute(self, repo_path: str, last_commit: str = None, **kwargs) -> AgentOutput:
-        """Detect changes and determine impacted documentation sections."""
+        """Detect changes and determine impacted documentation sections.
+
+        Args:
+            repo_path: Path to the source code repository.
+            last_commit: The last commit hash that was documented.
+
+        Returns:
+            AgentOutput containing change detection results.
+        """
         repo = Path(repo_path)
         changes = self._detect_changes(repo, last_commit)
 
@@ -62,6 +70,7 @@ class ContinuousUpdateAgent(BaseAgent):
                     timeout=30,
                 )
             else:
+                # Get files changed in last commit
                 result = subprocess.run(
                     ["git", "diff", "--name-only", "HEAD~1", "HEAD"],
                     cwd=str(repo),
@@ -87,12 +96,12 @@ class ContinuousUpdateAgent(BaseAgent):
         )
 
     def _identify_impacted_modules(self, changed_files: list[str]) -> list[str]:
-        """Identify which documentation modules are impacted."""
+        """Identify which documentation modules are impacted by the changes."""
         modules = set()
         for file_path in changed_files:
             parts = Path(file_path).parts
             if len(parts) > 1:
-                modules.add(parts[0])
+                modules.add(parts[0])  # Top-level directory as module
         return sorted(modules)
 
     def _assess_risk(self, changed_files: list[str]) -> bool:

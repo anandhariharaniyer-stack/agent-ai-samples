@@ -1,7 +1,7 @@
-"""Refinement Agent - improves clarity and readability of documentation (Bedrock)."""
+"""Refinement Agent - improves clarity and readability of documentation."""
 
-from doc_pipeline_bedrock.agents.base import BaseAgent
-from doc_pipeline_bedrock.models import AgentOutput
+from doc_pipeline_native.agents.base import BaseAgent
+from doc_pipeline_native.models import AgentOutput
 
 
 SYSTEM_PROMPT = """You are a documentation refinement agent. Your job is to improve the clarity 
@@ -42,13 +42,20 @@ class RefinementAgent(BaseAgent):
         return "Refinement Agent"
 
     def execute(self, documentation: str, **kwargs) -> AgentOutput:
-        """Refine documentation for clarity and readability."""
+        """Refine documentation for clarity and readability.
+
+        Args:
+            documentation: Verified documentation to refine.
+
+        Returns:
+            AgentOutput containing polished, readable documentation.
+        """
         user_prompt = USER_PROMPT_TEMPLATE.format(documentation=documentation)
 
         response = self.llm.generate(
             system_prompt=SYSTEM_PROMPT,
             user_prompt=user_prompt,
-            temperature=0.4,
+            temperature=0.4,  # Slightly higher for creative rewriting
         )
 
         return self._build_output(
