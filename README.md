@@ -5,7 +5,7 @@ Code samples for building AI agents — companion repo to my Medium articles on 
 ## Articles
 
 1. [From LLMs to Agentic AI (and a Gentle Intro to MCP)](https://medium.com/@anandhariharaniyer/from-llms-to-agentic-ai-and-a-gentle-intro-to-mcp-7267f2d85014)
-2. Building Your First AI Agent — A Step-by-Step Guide *(link coming soon)*
+2. Building Your First AI Agent — A Step-by-Step Guide (https://medium.com/@anandhariharaniyer/building-your-first-ai-agent-a-step-by-step-guide-792d9de3722a)
 3. Multi-Agent Documentation Pipeline *(link coming soon)*
 
 ## Samples
