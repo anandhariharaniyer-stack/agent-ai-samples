@@ -1,4 +1,4 @@
-"""Data models for the documentation pipeline (Bedrock version)."""
+"""Data models for the documentation pipeline."""
 
 from dataclasses import dataclass, field
 from typing import Optional

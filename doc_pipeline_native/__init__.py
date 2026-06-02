@@ -1,8 +1,8 @@
-"""Multi-Agent Documentation Pipeline - AWS Bedrock Implementation."""
+"""Multi-Agent Documentation Pipeline - Native Python Implementation."""
 
-from doc_pipeline_bedrock.orchestrator import DocumentationOrchestrator
-from doc_pipeline_bedrock.models import PipelineResult, Issue, ConfidenceScore
-from doc_pipeline_bedrock.config import PipelineConfig
+from doc_pipeline_native.orchestrator import DocumentationOrchestrator
+from doc_pipeline_native.models import PipelineResult, Issue, ConfidenceScore
+from doc_pipeline_native.config import PipelineConfig
 
 __all__ = [
     "DocumentationOrchestrator",

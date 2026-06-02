@@ -1,23 +1,23 @@
-"""Documentation Pipeline Orchestrator - AWS Bedrock implementation."""
+"""Documentation Pipeline Orchestrator - coordinates all agents."""
 
 import logging
 from datetime import datetime
 from pathlib import Path
 
-from doc_pipeline_bedrock.config import PipelineConfig
-from doc_pipeline_bedrock.llm_client import BedrockLLMClient
-from doc_pipeline_bedrock.models import PipelineResult, Issue, ConfidenceScore
-from doc_pipeline_bedrock.agents.generation import GenerationAgent
-from doc_pipeline_bedrock.agents.enrichment import EnrichmentAgent
-from doc_pipeline_bedrock.agents.verification import VerificationAgent
-from doc_pipeline_bedrock.agents.refinement import RefinementAgent
-from doc_pipeline_bedrock.agents.continuous import ContinuousUpdateAgent
+from doc_pipeline_native.config import PipelineConfig
+from doc_pipeline_native.llm_client import LLMClient
+from doc_pipeline_native.models import PipelineResult, Issue, ConfidenceScore
+from doc_pipeline_native.agents.generation import GenerationAgent
+from doc_pipeline_native.agents.enrichment import EnrichmentAgent
+from doc_pipeline_native.agents.verification import VerificationAgent
+from doc_pipeline_native.agents.refinement import RefinementAgent
+from doc_pipeline_native.agents.continuous import ContinuousUpdateAgent
 
 logger = logging.getLogger(__name__)
 
 
 class DocumentationOrchestrator:
-    """Orchestrates the multi-agent documentation pipeline using AWS Bedrock.
+    """Orchestrates the multi-agent documentation pipeline.
 
     Coordinates the flow between agents:
     1. Generation → 2. Enrichment → 3. Verification → 4. Refinement
@@ -46,8 +46,8 @@ class DocumentationOrchestrator:
         else:
             self.config = PipelineConfig()
 
-        # Initialize Bedrock LLM client
-        self.llm_client = BedrockLLMClient(self.config.bedrock)
+        # Initialize LLM client
+        self.llm_client = LLMClient(self.config.llm)
 
         # Initialize agents
         self.generation_agent = GenerationAgent(self.llm_client)
@@ -69,9 +69,7 @@ class DocumentationOrchestrator:
         started_at = datetime.now()
         agent_outputs = []
 
-        logger.info("Starting documentation pipeline (Bedrock)...")
-        logger.info(f"  Model: {self.config.bedrock.model_id}")
-        logger.info(f"  Region: {self.config.bedrock.region}")
+        logger.info("Starting documentation pipeline...")
 
         # Step 0: Check for changes (optional)
         if last_commit:
